@@ -1,0 +1,2 @@
+players states: 'lobby'|'unanswered'|'answered'|'inline'|'voting'|'out'|'done'
+game states: 'lobby'|'answer'|'voting' 
