@@ -1,11 +1,19 @@
 import React from 'react';
 import { Button, Container, Row, Col, Jumbotron, Form } from 'react-bootstrap';
 import { goToHome, goToGame } from '../Router';
+import { useDispatch } from 'react-redux';
+
+import { createGameId } from '../redux/actions/gameIdActions';
+import { setName } from '../redux/actions/nameActions';
 
 function NewGameOptions({ history }) {
 
-    function handleNewGame(e, history) {
+    const dispatch = useDispatch();
+
+    function handleNewGame(e, history, dispatch) {
         e.preventDefault();
+        dispatch(setName(e.target[0].value));
+        dispatch(createGameId());
         goToGame(history);
     }
 
@@ -18,7 +26,7 @@ function NewGameOptions({ history }) {
                         <Jumbotron>
                             <center>
                                 <h3>New Game Options</h3>
-                                <Form onSubmit={(e) => { handleNewGame(e, history) }}>
+                                <Form onSubmit={(e) => { handleNewGame(e, history, dispatch) }}>
                                     <Form.Group controlId='playerName'>
                                         <Form.Label>Name: </Form.Label>
                                         <br></br>

@@ -1,7 +1,6 @@
 import { SET_GAME_INFO } from '../actions/actionTypes';
 
 const defaultGameInfo = {
-    gameId: '123456',
     players: [
         {
             name: 'Alex',
@@ -14,7 +13,7 @@ const defaultGameInfo = {
     topic: 'Things dogs are actually saying when they bark'
 }
 
-export default function gameStateReducer(state = defaultGameInfo, action) {
+export default function gameInfoReducer(state = defaultGameInfo, action) {
     switch (action.type) {
         case SET_GAME_INFO:
             return state = action.payload;
