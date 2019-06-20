@@ -1,12 +1,11 @@
-function createPlayerModel(mongoose, gameId) {
+function createPlayerModel(mongoose) {
     let PlayerSchema = new mongoose.Schema({
-        gameId: String,
-        gameState: String,
-        turn: Number,
-        topic: String
+        name: String,
+        points: Number,
+        playerState: String
     });
     
-    return mongoose.model('PlayerModel', PlayerSchema, 'Players-'+gameId);
+    return PlayerSchema;
 }
 
 module.exports = createPlayerModel;

@@ -6,15 +6,16 @@ import { useDispatch } from 'react-redux';
 import { createGameId } from '../redux/actions/gameIdActions';
 import { setName } from '../redux/actions/nameActions';
 
+import { connectToGameServer, startNewGame } from '../socket/GameSocket';
+
 function NewGameOptions({ history }) {
 
     const dispatch = useDispatch();
 
     function handleNewGame(e, history, dispatch) {
         e.preventDefault();
-        dispatch(setName(e.target[0].value));
-        dispatch(createGameId());
-        goToGame(history);
+        connectToGameServer();
+        startNewGame(history);
     }
 
     return (

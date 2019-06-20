@@ -1,10 +1,30 @@
 import io from 'socket.io-client';
-import { useDispatch } from 'react-redux';
-import { refreshGameState } from '../redux/actions/gameStateActions';
+import { goToGame } from '../Router';
 
-export function useGameConnector() {
-    const socket = io('http://localhost');
-    const dispatch = useDispatch();
+let socket = null;
 
-    socket.on('refresh', dispatch(refreshGameState()));
+export function connectToGameServer() {
+    socket = io('http://localhost:3001');
+
+    socket.on('connect', ()=>{
+        console.log('Connected');
+    });
+}
+
+export function startNewGame(history){
+    socket.emit('newGame');
+
+    socket.on('newGameResponse', (gameId) => {
+        console.log('New game with id '+gameId+' created');
+        goToGame(history);
+    });
+}
+
+export function joinNewGame(history){
+    socket.emit('newGame');
+
+    socket.on('newGameResponse', (gameId) => {
+        console.log('New game with id '+gameId+' created');
+        goToGame(history);
+    });
 }

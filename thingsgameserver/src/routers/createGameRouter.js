@@ -1,7 +1,7 @@
 const express = require('express');
 
 function generateGameId(length) {
-    let validIdChars = '1234567890abcdefghijklmnopqrstuvwxyz';
+    let validIdChars = '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     let low = 0, high = validIdChars.length;
 
     //Move to config file probably
@@ -18,6 +18,7 @@ function generateGameId(length) {
 function createGameRouter(mongoose) {
     const gameRouter = express.Router();
     const Game = require('../models/GameModel')(mongoose);
+    var PlayerSchema = require('../models/PlayerModel')(mongoose);
 
     gameRouter.post('/', (req, res) => {
         let gameId = generateGameId(6);
@@ -29,7 +30,7 @@ function createGameRouter(mongoose) {
             topic: 'Hello'
         })
 
-        const Player = require('../models/PlayerModel')(mongoose, gameId);
+        var Player = mongoose.model('PlayerModel-'+gameId, PlayerSchema, 'Players-'+gameId);
         Player.createCollection().then((collection) => {
             NewGame.save((error) => {
                 if (error) {
@@ -42,14 +43,20 @@ function createGameRouter(mongoose) {
         })
     });
 
-    gameRouter.post('/:gameId/player', (req, res) => {
-        /*
-            -generate id
-            -add to game table
-            -create player table for game (ie players-${gameId})
-            -return gameId
-        */
-        const Player = require('../models/PlayerModel')(mongoose, gameId);
+    gameRouter.post('/:gameId/player/:name', (req, res) => {
+        var Player = mongoose.model('PlayerModel-'+req.params.gameId, PlayerSchema, 'Players-'+req.params.gameId);
+        let NewPlayer = new Player({
+            name: req.params.name,
+            points: 0,
+            state: 'lobby'
+        })
+
+        NewPlayer.save((error) => {
+            if (error) {
+                return res.send('error');
+            }
+            return res.status(200).send();
+        });
     });
 
     return gameRouter;
