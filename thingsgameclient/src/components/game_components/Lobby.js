@@ -1,25 +1,31 @@
 import React from 'react';
 import { ListGroup, Button } from 'react-bootstrap';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import { goToHome } from '../../Router';
 
 function Lobby({ history }) {
-    const gameState = useSelector(state => state.gameState);
+    const playerInfo = useSelector(state => state.playerInfo);
+    const dispatch = useDispatch();
+
+    function handleStartRound(e) {
+        e.preventDefault();
+        //dispatch some action that emits event 'startRound'
+    }
 
     return (
         <React.Fragment>
             <h5>Players:</h5>
             <ListGroup>
                 {
-                    gameState.players.map(player =>
+                    playerInfo.map(player =>
                         <ListGroup.Item key={player.name} style={{ color: 'white' }}>
                             {player.name}
                         </ListGroup.Item>)
                 }
             </ListGroup>
             <br></br>
-            <Button variant='primary' block onClick={(e) => { }}>
+            <Button variant='primary' block onClick={(e) => handleStartRound(e)}>
                 Start Round
             </Button>
             <Button variant='secondary' block onClick={() => goToHome(history)}>

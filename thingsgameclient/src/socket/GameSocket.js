@@ -1,40 +1,25 @@
 import io from 'socket.io-client';
-import { goToGame } from '../Router';
+import { setPlayerInfo } from '../redux/actions/playerInfoActions';
+import { setGameInfo } from '../redux/actions/gameInfoActions';
 
-let socket = null;
+export let socket = null;
 
-export function connectToGameServer() {
+export function connectToGameServer(dispatch) {
     socket = io('http://localhost:3001');
 
     socket.on('connect', () => {
         console.log('Connected');
     });
 
-    socket.on('noGameFound', gameId => {
-        console.log("No such game "+gameId);
-    });
-}
+    socket.on('gameUpdate', (gameInfo) => {
+        console.log(gameInfo);
+        dispatch(setGameInfo(gameInfo));
+        //Put info in store
+    })
 
-export function startNewGame(name, history) {
-    if (socket == null) {
-        connectToGameServer();
-    }
-
-    socket.emit('newGame', name);
-
-    socket.on('newGameResponse', (data) => {
-        goToGame(history);
-    });
-}
-
-export function joinNewGame(gameId, name, history) {
-    if (socket == null) {
-        connectToGameServer();
-    }
-
-    socket.emit('joinGame', gameId, name);
-
-    socket.on('joinGameResponse', (data) => {
-        goToGame(history);
-    });
+    socket.on('playersUpdate', (playerInfo) => {
+        console.log(playerInfo);
+        dispatch(setPlayerInfo(playerInfo));
+        //Put info in store
+    })
 }

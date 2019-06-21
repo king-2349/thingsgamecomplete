@@ -5,7 +5,6 @@ import Lobby from './game_components/Lobby';
 import Answer from './game_components/Answer';
 
 function Game({ history }) {
-    const gameId = useSelector(state => state.gameId);
     const gameInfo = useSelector(state => state.gameInfo);
 
     function renderGameState() {
@@ -26,7 +25,7 @@ function Game({ history }) {
                     <center>
                         <br></br>
                         <Jumbotron>
-                            <h4>Game Code: {gameId}</h4>
+                            <h4>Game Code: {gameInfo.gameId}</h4>
                             {renderGameState()}
                         </Jumbotron>
                     </center>

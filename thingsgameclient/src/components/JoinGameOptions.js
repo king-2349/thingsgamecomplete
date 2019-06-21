@@ -1,14 +1,16 @@
 import React from 'react';
 import { Button, Container, Row, Col, Jumbotron, Form } from 'react-bootstrap';
 import { goToHome } from '../Router';
-import { joinNewGame } from '../socket/GameSocket';
+import { joinGame } from '../redux/actions/gameSetupActions';
+import {useDispatch} from 'react-redux';
 
 
 function JoinGameOptions({ history }) {
+    const dispatch = useDispatch();
     
-    function handleJoinGame(e, history) {
+    function handleJoinGame(e) {
         e.preventDefault();
-        joinNewGame(e.target[1].value, e.target[0].value, history);
+        dispatch(joinGame(e.target[0].value, e.target[1].value, history));
     }
 
     return (
@@ -20,7 +22,7 @@ function JoinGameOptions({ history }) {
                         <Jumbotron>
                             <center>
                                 <h3>Join Game Options</h3>
-                                <Form onSubmit={(e) => handleJoinGame(e, history)}>
+                                <Form onSubmit={(e) => handleJoinGame(e)}>
                                     <Form.Group controlId='playerName'>
                                         <Form.Label>Name: </Form.Label>
                                         <br></br>
