@@ -1,19 +1,5 @@
 const express = require('express');
 
-function generateGameId(length) {
-    let validIdChars = '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    let low = 0, high = validIdChars.length;
-
-    //Move to config file probably
-    let gameIdLength = length;
-    let gameId = '';
-
-    for (let i = 0; i < gameIdLength; i++) {
-        gameId += validIdChars.charAt(Math.random() * (high - low) + low);
-    }
-
-    return gameId;
-}
 
 function createGameRouter(mongoose) {
     const gameRouter = express.Router();

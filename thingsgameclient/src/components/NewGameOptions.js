@@ -1,21 +1,17 @@
 import React from 'react';
 import { Button, Container, Row, Col, Jumbotron, Form } from 'react-bootstrap';
-import { goToHome, goToGame } from '../Router';
-import { useDispatch } from 'react-redux';
+import { goToHome } from '../Router';
+//import { useDispatch } from 'react-redux';
 
-import { createGameId } from '../redux/actions/gameIdActions';
-import { setName } from '../redux/actions/nameActions';
-
-import { connectToGameServer, startNewGame } from '../socket/GameSocket';
+import { startNewGame } from '../socket/GameSocket';
 
 function NewGameOptions({ history }) {
 
-    const dispatch = useDispatch();
+    //const dispatch = useDispatch();
 
-    function handleNewGame(e, history, dispatch) {
+    function handleNewGame(e, history) {
         e.preventDefault();
-        connectToGameServer();
-        startNewGame(history);
+        startNewGame(e.target[0].value, history);
     }
 
     return (
@@ -27,7 +23,7 @@ function NewGameOptions({ history }) {
                         <Jumbotron>
                             <center>
                                 <h3>New Game Options</h3>
-                                <Form onSubmit={(e) => { handleNewGame(e, history, dispatch) }}>
+                                <Form onSubmit={(e) => { handleNewGame(e, history) }}>
                                     <Form.Group controlId='playerName'>
                                         <Form.Label>Name: </Form.Label>
                                         <br></br>

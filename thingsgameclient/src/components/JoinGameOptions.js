@@ -1,12 +1,14 @@
 import React from 'react';
 import { Button, Container, Row, Col, Jumbotron, Form } from 'react-bootstrap';
 import { goToHome } from '../Router';
+import { joinNewGame } from '../socket/GameSocket';
 
 
 function JoinGameOptions({ history }) {
     
-    function handleJoinGame(e) {
+    function handleJoinGame(e, history) {
         e.preventDefault();
+        joinNewGame(e.target[1].value, e.target[0].value, history);
     }
 
     return (
@@ -18,7 +20,7 @@ function JoinGameOptions({ history }) {
                         <Jumbotron>
                             <center>
                                 <h3>Join Game Options</h3>
-                                <Form onSubmit={(e) => handleJoinGame(e)}>
+                                <Form onSubmit={(e) => handleJoinGame(e, history)}>
                                     <Form.Group controlId='playerName'>
                                         <Form.Label>Name: </Form.Label>
                                         <br></br>
