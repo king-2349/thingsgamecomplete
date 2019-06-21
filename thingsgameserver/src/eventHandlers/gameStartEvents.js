@@ -12,9 +12,10 @@ function generateGameId(length) {
     return gameId;
 }
 
-function createGameStartEvents(socket) {
+function createGameStartEvents(socket, io) {
     const Game = require('../models/GameModel')();
     const Player = require('../models/PlayerModel');
+    const info = require('./getInfo');
 
     function addPlayerToGame(gameId, name, callback) {
         let NewPlayer = new Player(gameId)({
@@ -49,7 +50,9 @@ function createGameStartEvents(socket) {
                     else {
                         console.log('added player ' + name + ' to game ' + gameId);
                         socket.join(gameId);
-                        socket.emit('newGameResponse', gameId);
+                        info.getGameInfo(gameId, (gameInfo) => {
+                            socket.emit('newGameResponse', gameInfo);
+                        });
                     }
                 });
             });
@@ -69,7 +72,12 @@ function createGameStartEvents(socket) {
                 else {
                     console.log('added player ' + name + ' to game ' + gameId);
                     socket.join(gameId);
-                    socket.emit('joinGameResponse', gameId);
+                    info.getGameInfo(gameId, (gameInfo) => {
+                        socket.emit('joinGameResponse', gameInfo);
+                    });
+                    info.getPlayerInfo(gameId, (playerInfo) => {
+                        io.to(gameId).emit('playersUpdate', playerInfo);
+                    });
                 }
             });
 

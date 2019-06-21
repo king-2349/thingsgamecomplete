@@ -14,5 +14,5 @@ app.use(express.urlencoded({ extended: true }))
 const io = require('socket.io')(app.listen(3001));
 
 io.on('connection', (socket) => {
-    require('./eventHandlers/gameStartEvents')(socket);
+    require('./eventHandlers/gameStartEvents')(socket, io);
 });
