@@ -1,5 +1,5 @@
 const Game = require('../models/GameModel')();
-const Player = require('../models/PlayerModel');
+const Player = require('../models/PlayerModel')();
 
 exports.getGameInfo = (gameId, callback) => {
     Game.findOne({ gameId: gameId }, (err, game) => {
@@ -12,7 +12,6 @@ exports.getGameInfo = (gameId, callback) => {
             turn: game.turn,
             topic: game.topic
         };
-        console.log(gameInfo);
         callback(gameInfo);
     })
 }
@@ -22,9 +21,8 @@ exports.getPlayerInfo = (gameId, callback) => {
         if (err) {
             return [];
         }
-        const PlayerModel = Player(gameId);
         const playerInfo = [];
-        PlayerModel.find((err, players) => {
+        Player.find({gameId: gameId},(err, players) => {
             players.forEach((player) => {
                 playerInfo.push(
                     {
