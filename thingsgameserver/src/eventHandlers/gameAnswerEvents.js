@@ -41,13 +41,19 @@ function createGameVoteEvents(socket, io) {
                                         return;
                                     }
                                     info.getPlayerInfo(gameId, (playerInfo) => {
-                                        io.to(gameId).emit(OutboundEvents.PLAYERS_UPDATE, playerInfo);
-                                    });
-                                    info.getGameInfo(gameId, (gameInfo) => {
-                                        socket.emit(OutboundEvents.GAME_UPDATE, gameInfo);
+                                        info.getGameInfo(gameId, (gameInfo) => {
+                                            io.to(gameId).emit(OutboundEvents.ALL_UPDATE, gameInfo, playerInfo);
+                                        });
                                     });
                                 });
                             })
+                        });
+                    });
+                }
+                else{
+                    info.getPlayerInfo(gameId, (playerInfo) => {
+                        info.getGameInfo(gameId, (gameInfo) => {
+                            io.to(gameId).emit(OutboundEvents.ALL_UPDATE, gameInfo, playerInfo);
                         });
                     });
                 }

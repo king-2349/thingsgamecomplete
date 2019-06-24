@@ -1,10 +1,11 @@
 import { combineReducers } from 'redux';
 import gameInfoReducer from './gameInfoReducer';
-import playerInfoReducer from './playerInfoReducer';
+import playerInfoReducer, { nameReducer } from './playerInfoReducer';
 
 const rootReducer = combineReducers({
     gameInfo: gameInfoReducer,
-    playerInfo: playerInfoReducer
+    playerInfo: playerInfoReducer,
+    name: nameReducer
 });
 
 export default rootReducer;

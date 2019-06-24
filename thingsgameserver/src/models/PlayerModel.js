@@ -5,7 +5,8 @@ let PlayerSchema = new mongoose.Schema({
     name: String,
     points: Number,
     state: String,
-    answer: String
+    answer: String,
+    pickedTopic: Boolean
 });
 
 function createPlayerModel(gameId) {

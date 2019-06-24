@@ -1,18 +1,32 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Container, Row, Col, Jumbotron, Form } from 'react-bootstrap';
 import { goToHome } from '../Router';
 import { joinGame } from '../redux/actions/gameSetupActions';
-import {useDispatch} from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 
 function JoinGameOptions({ history }) {
     const dispatch = useDispatch();
-    
+    const [nameField, setNameField] = useState('');
+    const [gameIdField, setGameIdField] = useState('');
+
     function handleJoinGame(e) {
         e.preventDefault();
-        dispatch(joinGame(e.target[0].value, e.target[1].value, history));
+        dispatch(joinGame(nameField,gameIdField, history));
+        setNameField('');
+        setGameIdField('');
     }
 
+    function nameOnChange(e) {
+        setNameField(e.target.value);
+    }
+
+    function gameIdOnChange(e) {
+        setGameIdField(e.target.value);
+    }
+
+    //Can have flag in store for different errors like game not found or name already taken
+    //if statements that only render stuff when flag is true
     return (
         <React.Fragment>
             <Container>
@@ -26,12 +40,12 @@ function JoinGameOptions({ history }) {
                                     <Form.Group controlId='playerName'>
                                         <Form.Label>Name: </Form.Label>
                                         <br></br>
-                                        <Form.Control type='input'></Form.Control>
+                                        <Form.Control type='input' value={nameField} onChange={nameOnChange}></Form.Control>
                                     </Form.Group>
                                     <Form.Group controlId='numberOfPlayers'>
                                         <Form.Label>Game Code: </Form.Label>
                                         <br></br>
-                                        <Form.Control type='input'></Form.Control>
+                                        <Form.Control type='input' value={gameIdField} onChange={gameIdOnChange}></Form.Control>
                                     </Form.Group>
                                     <Button type='submit' variant='primary' block>
                                         Start

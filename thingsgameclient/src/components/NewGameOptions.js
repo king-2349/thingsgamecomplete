@@ -1,15 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Container, Row, Col, Jumbotron, Form } from 'react-bootstrap';
 import { goToHome } from '../Router';
 import { newGame } from '../redux/actions/gameSetupActions';
-import {useDispatch} from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 function NewGameOptions({ history }) {
     const dispatch = useDispatch();
+    const [nameField, setNameField] = useState('');
 
     function handleNewGame(e) {
         e.preventDefault();
-        dispatch(newGame(e.target[0].value, history));
+        dispatch(newGame(nameField, history));
+        setNameField('');
+    }
+
+    function nameOnChange(e) {
+        setNameField(e.target.value);
     }
 
     return (
@@ -25,7 +31,7 @@ function NewGameOptions({ history }) {
                                     <Form.Group controlId='playerName'>
                                         <Form.Label>Name: </Form.Label>
                                         <br></br>
-                                        <Form.Control type='input'></Form.Control>
+                                        <Form.Control type='input' value={nameField} onChange={nameOnChange}></Form.Control>
                                     </Form.Group>
                                     <Button type='submit' variant='primary' block>
                                         Start

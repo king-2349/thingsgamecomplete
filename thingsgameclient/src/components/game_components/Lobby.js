@@ -1,24 +1,37 @@
 import React from 'react';
 import { ListGroup, Button } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
-
+import { startRound } from '../../redux/actions/gameSetupActions';
 import { goToHome } from '../../Router';
 
 function Lobby({ history }) {
+    const gameInfo = useSelector(state => state.gameInfo);
     const playerInfo = useSelector(state => state.playerInfo);
     const dispatch = useDispatch();
 
     function handleStartRound(e) {
         e.preventDefault();
-        //dispatch some action that emits event 'startRound'
+        dispatch(startRound(gameInfo.gameId));
+    }
+
+    function turnPlayerInfoIntoArray(){
+        let players = [];
+        for(let key in playerInfo){
+            players.push({
+                name:key,
+                ...playerInfo[key]
+            })
+        }
+        return players;
     }
 
     return (
         <React.Fragment>
+            <h4>Game Code: {gameInfo.gameId}</h4>
             <h5>Players:</h5>
             <ListGroup>
                 {
-                    playerInfo.map(player =>
+                    turnPlayerInfoIntoArray().map(player =>
                         <ListGroup.Item key={player.name} style={{ color: 'white' }}>
                             {player.name}
                         </ListGroup.Item>)
