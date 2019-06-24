@@ -7,8 +7,9 @@ function Vote({ history }) {
     const playerInfo = useSelector(state => state.playerInfo);
     const name = useSelector(state => state.name);
 
-    function handleAnswer(e) {
+    function handleVote(e) {
         e.preventDefault();
+        console.log(e.target.value);
     }
 
     function createDropDown() {
@@ -17,7 +18,7 @@ function Vote({ history }) {
             players.push(key);
         }
         return (
-            <DropdownButton title='Vote for player'>
+            <DropdownButton title='Vote for player' onSelect={(e) => handleVote(e)}>
                 {
                     players.map(player =>
                         <Dropdown.Item key={player}>{player}</Dropdown.Item>
@@ -27,7 +28,7 @@ function Vote({ history }) {
         )
     }
 
-    function getDropDown() {
+    function getDropDown(player) {
         switch (playerInfo[name].state) {
             case 'voting':
                 return createDropDown()
@@ -38,14 +39,24 @@ function Vote({ history }) {
         }
     }
 
+    function getAnswerName(player){
+        switch(player.state){
+            case 'out':
+                return player.name+":"
+            default:
+                return '????:'
+        }
+    }
+
     function generatePlayerAnswer(player) {
         return (
             <React.Fragment key={player.name}>
+                <h5>{getAnswerName(player)}</h5>
                 <h5>{player.answer}</h5>
                 {
-                    getDropDown()
+                    getDropDown(player)
                 }
-                <div style={{ marginBottom: '15px', borderBottom: '2px solid white', paddingBottom:'15px' }}></div>
+                <div style={{ marginBottom: '15px', borderBottom: '2px solid white', paddingBottom: '15px' }}></div>
             </React.Fragment>
         );
     }
@@ -61,10 +72,22 @@ function Vote({ history }) {
         return players;
     }
 
+    function getStatus() {
+        switch (playerInfo[name].state) {
+            case 'out':
+                return 'OUT'
+            case 'inline':
+                return 'WAIT'
+            default:
+                return 'DONE'
+        }
+    }
+
     return (
         <React.Fragment>
+            <h5>Status: {getStatus()}</h5>
             <h5>Topic:</h5>
-            <h5 style={{ marginBottom: '15px', fontStyle: 'italic', borderBottom: '2px solid white', paddingBottom:'15px' }}>{gameInfo.topic}</h5>
+            <h5 style={{ marginBottom: '15px', fontStyle: 'italic', borderBottom: '2px solid white', paddingBottom: '15px' }}>{gameInfo.topic}</h5>
             {
                 turnPlayerInfoIntoArray().map(player =>
                     generatePlayerAnswer(player)
