@@ -19,38 +19,27 @@ function createGameVoteEvents(socket, io) {
                     return;
                 }
                 if (players.length == 0) {
-                    Game.updateOne({ gameId: gameId }, { gameState: GameStates.VOTING }, (err, res) => {
+                    Game.findOneAndUpdate({ gameId: gameId }, { gameState: GameStates.VOTING }, (err, game) => {
                         if (err) {
                             socket.emit(OutboundEvents.BACKEND_ERROR, err);
                             return;
                         }
-                        Player.find({ gameId: gameId }, (err, players) => {
+                        Player.updateMany({ gameId: gameId }, { state: PlayerStates.INLINE }, (err, res) => {
                             if (err) {
                                 socket.emit(OutboundEvents.BACKEND_ERROR, err);
                                 return;
                             }
-                            var firstTurnPlayer = players[Math.floor(Math.random() * players.length)];
-                            Player.updateMany({ gameId: gameId }, { state: PlayerStates.INLINE }, (err, res) => {
-                                if (err) {
-                                    socket.emit(OutboundEvents.BACKEND_ERROR, err);
-                                    return;
-                                }
-                                Player.updateOne({ gameId: gameId, name: firstTurnPlayer.name }, { state: PlayerStates.VOTING }, (err, res) => {
-                                    if (err) {
-                                        socket.emit(OutboundEvents.BACKEND_ERROR, err);
-                                        return;
-                                    }
-                                    info.getPlayerInfo(gameId, (playerInfo) => {
-                                        info.getGameInfo(gameId, (gameInfo) => {
-                                            io.to(gameId).emit(OutboundEvents.ALL_UPDATE, gameInfo, playerInfo);
-                                        });
+                            Player.updateOne({ gameId: gameId, name: game.voter }, { state: PlayerStates.VOTING }, (err, res) => {
+                                info.getPlayerInfo(gameId, (playerInfo) => {
+                                    info.getGameInfo(gameId, (gameInfo) => {
+                                        io.to(gameId).emit(OutboundEvents.ALL_UPDATE, gameInfo, playerInfo);
                                     });
                                 });
                             })
-                        });
+                        })
                     });
                 }
-                else{
+                else {
                     info.getPlayerInfo(gameId, (playerInfo) => {
                         info.getGameInfo(gameId, (gameInfo) => {
                             io.to(gameId).emit(OutboundEvents.ALL_UPDATE, gameInfo, playerInfo);

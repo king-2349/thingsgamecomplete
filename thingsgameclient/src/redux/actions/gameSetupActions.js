@@ -6,7 +6,7 @@ import { goToGame } from '../../Router';
 export function newGame(name, history) {
     return (dispatch) => {
         if (socket == null) {
-            connectToGameServer(dispatch);
+            connectToGameServer(dispatch, history);
         }
 
         if (socket != null) {
@@ -25,7 +25,7 @@ export function newGame(name, history) {
 export function joinGame(name, gameId, history) {
     return (dispatch) => {
         if (socket == null) {
-            connectToGameServer(dispatch);
+            connectToGameServer(dispatch, history);
         }
 
         if (socket != null) {
@@ -64,5 +64,17 @@ export function submitTopic(gameId, topic) {
 export function submitAnswer(gameId, name, answer) {
     return (dispatch) => {
         socket.emit('submittedAnswer', gameId, name, answer);
+    }
+}
+
+export function submitVote(gameId, name, vote) {
+    return (dispatch) => {
+        socket.emit('voted', gameId, name, vote);
+    }
+}
+
+export function backToLobby(gameId) {
+    return (dispatch) => {
+        socket.emit('backToLobby', gameId);
     }
 }

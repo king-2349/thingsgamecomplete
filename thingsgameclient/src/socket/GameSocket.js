@@ -1,10 +1,11 @@
 import io from 'socket.io-client';
 import { setPlayerInfo } from '../redux/actions/playerInfoActions';
 import { setGameInfo } from '../redux/actions/gameInfoActions';
+import { goToHome } from '../Router';
 
 export let socket = null;
 
-export function connectToGameServer(dispatch) {
+export function connectToGameServer(dispatch, history) {
     socket = io('http://localhost:3001', { reconnection: false });
 
     socket.on('connect', () => {
@@ -17,22 +18,15 @@ export function connectToGameServer(dispatch) {
     })
 
     socket.on('allUpdate', (gameInfo, playerInfo) => {
-        console.log('allUpdate event');
         dispatch(setGameInfo(gameInfo));
-        dispatch(setPlayerInfo(playerInfo));
-    })
-
-    socket.on('gameUpdate', (gameInfo) => {
-        console.log('gameUpdate event');
-        dispatch(setGameInfo(gameInfo));
-    })
-
-    socket.on('playersUpdate', (playerInfo) => {
-        console.log('playersUpdate event');
         dispatch(setPlayerInfo(playerInfo));
     })
 
     socket.on('backendError', (err) => {
         console.log(err);
+    })
+
+    socket.on('disconnect', () => {
+        goToHome(history);
     })
 }

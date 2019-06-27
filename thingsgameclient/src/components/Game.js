@@ -5,12 +5,14 @@ import Lobby from './game_components/Lobby';
 import Answer from './game_components/Answer';
 import Topic from './game_components/Topic';
 import Vote from './game_components/Vote';
+import Results from './game_components/Results';
+import { goToHome } from '../Router';
 
 function Game({ history }) {
     const gameInfo = useSelector(state => state.gameInfo);
 
     if (gameInfo.gameId === '') {
-        history.push('/');
+        goToHome(history);
     }
 
     function renderGameState() {
@@ -23,6 +25,8 @@ function Game({ history }) {
                 return <Answer history={history} />
             case 'voting':
                 return <Vote history={history} />
+            case 'results':
+                return <Results history={history} />
             default:
                 return <Lobby history={history} />
         }
@@ -33,6 +37,7 @@ function Game({ history }) {
             <Row>
                 <Col>
                     <center>
+                        <br></br>
                         <Jumbotron>
                             {renderGameState()}
                         </Jumbotron>

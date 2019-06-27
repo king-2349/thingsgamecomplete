@@ -8,46 +8,27 @@ function createGameStateEvents(socket, io) {
     const info = require('./getInfo');
 
     socket.on(InboundEvents.START_ROUND, (gameId) => {
-        Game.updateOne({ gameId: gameId }, { gameState: GameStates.TOPIC, topic: '' }, (err, res) => {
+        Game.findOneAndUpdate({ gameId: gameId }, { gameState: GameStates.TOPIC, topic: '' }, (err, game) => {
             if (err) {
                 socket.emit(OutboundEvents.BACKEND_ERROR, err);
                 return;
             }
-            Player.find({ gameId: gameId, pickedTopic: false }, (err, players) => {
+            Player.findOne({ gameId: gameId, name: game.gameHead }, (err, player) => {
                 if (err) {
                     socket.emit(OutboundEvents.BACKEND_ERROR, err);
                     return;
                 }
-                if (players.length == 0) {
-                    Player.find({ gameId: gameId }, (err, players) => {
-                        const playerToPick = players[Math.floor(Math.random() * players.length)];
-                        Player.updateMany({ gameId: gameId }, { state: PlayerStates.WAITING, answer: '', pickedTopic: false }, (err, res) => {
-                            if (err) {
-                                socket.emit(OutboundEvents.BACKEND_ERROR, err);
-                                return;
-                            }
-                            Player.updateOne({ gameId: gameId, name: playerToPick.name }, { state: PlayerStates.TOPIC, pickedTopic: true }, (err, res) => {
-                                if (err) {
-                                    socket.emit(OutboundEvents.BACKEND_ERROR, err);
-                                    return;
-                                }
-                                info.getPlayerInfo(gameId, (playerInfo) => {
-                                    info.getGameInfo(gameId, (gameInfo) => {
-                                        io.to(gameId).emit(OutboundEvents.ALL_UPDATE, gameInfo, playerInfo);
-                                    });
-                                });
-                            })
-                        })
-                    })
-                }
-                else {
-                    const playerToPick = players[Math.floor(Math.random() * players.length)];
-                    Player.updateMany({ gameId: gameId }, { state: PlayerStates.WAITING, answer: '' }, (err, res) => {
+                Player.updateMany({ gameId: gameId }, { state: PlayerStates.WAITING, answer: '', pickedTopic: false, roundPoints: 0 }, (err, res) => {
+                    if (err) {
+                        socket.emit(OutboundEvents.BACKEND_ERROR, err);
+                        return;
+                    }
+                    Player.updateOne({ gameId: gameId, name: player.name }, { state: PlayerStates.TOPIC, pickedTopic: true }, (err, res) => {
                         if (err) {
                             socket.emit(OutboundEvents.BACKEND_ERROR, err);
                             return;
                         }
-                        Player.updateOne({ gameId: gameId, name: playerToPick.name }, { state: PlayerStates.TOPIC, pickedTopic: true }, (err, res) => {
+                        Game.updateOne({ gameId: gameId }, { gameHead: player.next, voter: player.next }, (err, res) => {
                             if (err) {
                                 socket.emit(OutboundEvents.BACKEND_ERROR, err);
                                 return;
@@ -59,7 +40,7 @@ function createGameStateEvents(socket, io) {
                             });
                         })
                     })
-                }
+                })
             })
         });
     });

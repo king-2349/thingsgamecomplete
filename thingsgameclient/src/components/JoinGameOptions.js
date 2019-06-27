@@ -12,7 +12,7 @@ function JoinGameOptions({ history }) {
 
     function handleJoinGame(e) {
         e.preventDefault();
-        dispatch(joinGame(nameField,gameIdField, history));
+        dispatch(joinGame(nameField, gameIdField, history));
         setNameField('');
         setGameIdField('');
     }

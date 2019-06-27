@@ -8,8 +8,6 @@ function createGameRoundOverEvents(socket, io) {
     const info = require('./getInfo');
 
     socket.on(InboundEvents.BACK_TO_LOBBY, (gameId) => {
-        //Got to keep track of points somwhere
-
         Game.update({ gameId: gameId }, { gameState: GameStates.LOBBY, topic: '' }, (err, res) => {
             if (err) {
                 socket.emit(OutboundEvents.BACKEND_ERROR, err);

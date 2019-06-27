@@ -1,5 +1,5 @@
 function generateGameId(length) {
-    let validIdChars = '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    let validIdChars = '1234567890abcdefghijklmnopqrstuvwxyz!?@&';
     let low = 0, high = validIdChars.length;
 
     let gameIdLength = length;
@@ -21,14 +21,18 @@ function createGameStartEvents(socket, io) {
     const Player = require('../models/PlayerModel')();
     const info = require('./getInfo');
 
-    function addPlayerToGame(gameId, name, callback) {
+    function addPlayerToGame(gameId, name, next, tail, callback) {
         let NewPlayer = new Player({
             gameId: gameId,
             name: name,
             points: 0,
             state: PlayerStates.LOBBY,
             answer: '',
-            pickedTopic: false
+            pickedTopic: false,
+            next: next,
+            tail: tail,
+            roundPoints: 0,
+            socketId: socket.id
         });
         NewPlayer.save(err => callback(err));
     }
@@ -41,7 +45,9 @@ function createGameStartEvents(socket, io) {
             gameId: gameId,
             gameState: GameStates.LOBBY,
             turn: 1,
-            topic: ''
+            topic: '',
+            gameHead: name,
+            voter: name
         })
 
         NewGame.save((err) => {
@@ -49,13 +55,14 @@ function createGameStartEvents(socket, io) {
                 socket.emit(OutboundEvents.BACKEND_ERROR, err);
                 return;
             }
-            addPlayerToGame(gameId, name, (err) => {
+            addPlayerToGame(gameId, name, name, true, (err) => {
                 if (err) {
                     socket.emit(OutboundEvents.BACKEND_ERROR, err);
                     return;
                 }
                 console.log('added player ' + name + ' to game ' + gameId);
                 socket.join(gameId);
+
                 info.getGameInfo(gameId, (gameInfo) => {
                     info.getPlayerInfo(gameId, (playerInfo) => {
                         socket.emit(OutboundEvents.ADDED_TO_GAME, gameInfo, playerInfo);
@@ -82,7 +89,7 @@ function createGameStartEvents(socket, io) {
                 socket.emit(OutboundEvents.GAME_IN_PROGRESS, gameId);
                 return;
             }
-            Player.findOne({ gameId:gameId, name: name }, (err, player) => {
+            Player.findOne({ gameId: gameId, name: name }, (err, player) => {
                 if (err) {
                     socket.emit(OutboundEvents.BACKEND_ERROR, err);
                     return;
@@ -91,20 +98,32 @@ function createGameStartEvents(socket, io) {
                     socket.emit(OutboundEvents.NAME_ALREADY_EXISTS, name);
                     return;
                 }
-                addPlayerToGame(gameId, name, (err) => {
+                Player.findOne({ gameId: gameId, tail: true }, (err, tail) => {
                     if (err) {
-                        socket.emit(OutboundEvents.BACKEND_ERROR, err);
+                        socket.emit(OutboundEvents.BACKEND_ERROR, {error:'finding tail'});
                         return;
                     }
-                    console.log('added player ' + name + ' to game ' + gameId);
-                    socket.join(gameId);
-                    info.getGameInfo(gameId, (gameInfo) => {
-                        info.getPlayerInfo(gameId, (playerInfo) => {
-                            socket.emit(OutboundEvents.ADDED_TO_GAME, gameInfo, playerInfo);
-                            socket.to(gameId).emit(OutboundEvents.ALL_UPDATE, gameInfo,playerInfo);
-                        });
+                    addPlayerToGame(gameId, name, tail.next, true, (err) => {
+                        if (err) {
+                            socket.emit(OutboundEvents.BACKEND_ERROR, {error:'adding to game'});
+                            return;
+                        }
+                        Player.updateOne({ gameId: gameId, name: tail.name }, { next: name, tail: false }, (err, res) => {
+                            if (err) {
+                                socket.emit(OutboundEvents.BACKEND_ERROR, );
+                                return;
+                            }
+                            console.log('added player ' + name + ' to game ' + gameId);
+                            socket.join(gameId);
+                            info.getGameInfo(gameId, (gameInfo) => {
+                                info.getPlayerInfo(gameId, (playerInfo) => {
+                                    socket.emit(OutboundEvents.ADDED_TO_GAME, gameInfo, playerInfo);
+                                    socket.to(gameId).emit(OutboundEvents.ALL_UPDATE, gameInfo, playerInfo);
+                                });
+                            });
+                        })
                     });
-                });
+                })
             });
         })
     });

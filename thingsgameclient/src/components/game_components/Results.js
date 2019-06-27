@@ -1,17 +1,16 @@
 import React from 'react';
 import { ListGroup, Button, Container, Row, Col } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
-import { startRound } from '../../redux/actions/gameSetupActions';
-import { goToHome } from '../../Router';
+import { backToLobby } from '../../redux/actions/gameSetupActions';
 
-function Lobby({ history }) {
+function Results({ history }) {
     const gameInfo = useSelector(state => state.gameInfo);
     const playerInfo = useSelector(state => state.playerInfo);
     const dispatch = useDispatch();
 
-    function handleStartRound(e) {
+    function handleBackToLobby(e) {
         e.preventDefault();
-        dispatch(startRound(gameInfo.gameId));
+        dispatch(backToLobby(gameInfo.gameId));
     }
 
     function turnPlayerInfoIntoArray(){
@@ -27,8 +26,7 @@ function Lobby({ history }) {
 
     return (
         <React.Fragment>
-            <h4>Game Code: {gameInfo.gameId}</h4>
-            <h5>Players:</h5>
+            <h5>Results:</h5>
             <ListGroup>
                 {
                     turnPlayerInfoIntoArray().map(player =>
@@ -36,21 +34,18 @@ function Lobby({ history }) {
                             <Container>
                                 <Row>
                                     <Col xs={9} style={{textAlign:'left'}}>{player.name}</Col>
-                                    <Col xs={3} style={{textAlign:'right'}}>{player.points}</Col>
+                                    <Col xs={3} style={{textAlign:'right'}}>{'+'+player.roundPoints}</Col>
                                 </Row>
                             </Container>
                         </ListGroup.Item>)
                 }
             </ListGroup>
             <br></br>
-            <Button variant='primary' block onClick={(e) => handleStartRound(e)}>
-                Start Round
-            </Button>
-            <Button variant='secondary' block onClick={() => goToHome(history)}>
-                Leave Game
+            <Button variant='primary' block onClick={(e) => handleBackToLobby(e)}>
+                Back to Lobby
             </Button>
         </React.Fragment>
     );
 }
 
-export default Lobby;
+export default Results;

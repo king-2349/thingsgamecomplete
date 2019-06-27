@@ -4,7 +4,9 @@ let GameSchema = new mongoose.Schema({
     gameId: String,
     gameState: String,
     turn: Number,
-    topic: String
+    topic: String,
+    gameHead: String,
+    voter: String
 });
 
 function createGameModel() {

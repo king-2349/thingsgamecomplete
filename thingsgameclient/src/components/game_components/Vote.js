@@ -1,27 +1,32 @@
 import React from 'react';
 import { DropdownButton, Dropdown } from 'react-bootstrap';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { submitVote } from '../../redux/actions/gameSetupActions';
 
 function Vote({ history }) {
     const gameInfo = useSelector(state => state.gameInfo);
     const playerInfo = useSelector(state => state.playerInfo);
     const name = useSelector(state => state.name);
+    const dispatch = useDispatch();
 
-    function handleVote(e) {
-        e.preventDefault();
-        console.log(e.target.value);
+    function handleVote(key, e, answer) {
+        let vote = {
+            name: key,
+            answer: answer
+        };
+        dispatch(submitVote(gameInfo.gameId, name, vote));
     }
 
-    function createDropDown() {
+    function createDropDown(player) {
         let players = [];
         for (let key in playerInfo) {
             players.push(key);
         }
         return (
-            <DropdownButton title='Vote for player' onSelect={(e) => handleVote(e)}>
+            <DropdownButton title='Vote for player' onSelect={(key, e) => handleVote(key, e, player.answer)}>
                 {
-                    players.map(player =>
-                        <Dropdown.Item key={player}>{player}</Dropdown.Item>
+                    players.map(playerName =>
+                        <Dropdown.Item eventKey={playerName} key={playerName}>{playerName}</Dropdown.Item>
                     )
                 }
             </DropdownButton>
@@ -31,7 +36,10 @@ function Vote({ history }) {
     function getDropDown(player) {
         switch (playerInfo[name].state) {
             case 'voting':
-                return createDropDown()
+                if (player.name === name) {
+                    return <React.Fragment></React.Fragment>
+                }
+                return createDropDown(player)
             default:
                 return (
                     <React.Fragment></React.Fragment>
@@ -39,10 +47,10 @@ function Vote({ history }) {
         }
     }
 
-    function getAnswerName(player){
-        switch(player.state){
+    function getAnswerName(player) {
+        switch (player.state) {
             case 'out':
-                return player.name+":"
+                return player.name + ":"
             default:
                 return '????:'
         }
@@ -52,7 +60,7 @@ function Vote({ history }) {
         return (
             <React.Fragment key={player.name}>
                 <h5>{getAnswerName(player)}</h5>
-                <h5>{player.answer}</h5>
+                <h5 style={{ marginBottom: '15px', fontStyle: 'italic' }}>{player.answer}</h5>
                 {
                     getDropDown(player)
                 }
@@ -69,17 +77,17 @@ function Vote({ history }) {
                 ...playerInfo[key]
             })
         }
-        return players;
+        return players.sort((a,b) => Math.random()-.5);
     }
 
     function getStatus() {
         switch (playerInfo[name].state) {
             case 'out':
                 return 'OUT'
-            case 'inline':
-                return 'WAIT'
+            case 'voting':
+                return 'VOTE'
             default:
-                return 'DONE'
+                return 'WAIT'
         }
     }
 

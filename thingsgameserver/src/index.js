@@ -3,7 +3,8 @@ const cors = require('cors');
 
 const mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost:27017/thingsgame', {
-    useNewUrlParser: true
+    useNewUrlParser: true,
+    useFindAndModify: false
 });
 
 const app = express();
@@ -20,4 +21,5 @@ io.on('connection', (socket) => {
     require('./eventHandlers/gameAnswerEvents')(socket, io);
     require('./eventHandlers/gameVoteEvents')(socket, io);
     require('./eventHandlers/gameRoundOverEvents')(socket, io);
+    require('./eventHandlers/gameDisconnectEvents')(socket, io);
 });

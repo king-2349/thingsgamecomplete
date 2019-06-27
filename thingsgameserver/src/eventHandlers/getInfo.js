@@ -27,7 +27,8 @@ exports.getPlayerInfo = (gameId, callback) => {
                 playerInfo[player.name] = {
                     points: player.points,
                     state: player.state,
-                    answer: player.answer
+                    answer: player.answer,
+                    roundPoints: player.roundPoints
                 }
             });
             callback(playerInfo);
