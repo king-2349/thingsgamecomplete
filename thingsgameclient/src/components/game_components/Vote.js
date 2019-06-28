@@ -28,9 +28,12 @@ function Vote({ history }) {
         return (
             <DropdownButton title='Vote for player' onSelect={(key, e) => handleVote(key, e, player.answer)}>
                 {
-                    players.map(playerName =>
-                        <Dropdown.Item eventKey={playerName} key={playerName}>{playerName}</Dropdown.Item>
-                    )
+                    players.map(playerName => {
+                        if(playerName === name){
+                            return <React.Fragment key={playerName}></React.Fragment>
+                        }
+                        return <Dropdown.Item eventKey={playerName} key={playerName}>{playerName}</Dropdown.Item>
+                    })
                 }
             </DropdownButton>
         )
@@ -57,6 +60,9 @@ function Vote({ history }) {
     }
 
     function generatePlayerAnswer(player) {
+        if(player.name === name){
+            return <React.Fragment key={player.name}></React.Fragment>
+        }
         return (
             <React.Fragment key={player.name}>
                 <h5>{getAnswerName(player)}</h5>
