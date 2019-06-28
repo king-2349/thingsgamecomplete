@@ -3,11 +3,12 @@ import { setPlayerInfo } from '../redux/actions/playerInfoActions';
 import { setGameInfo } from '../redux/actions/gameInfoActions';
 import { setError } from '../redux/actions/errorActions';
 import { goToHome } from '../Router';
+import configJson from  '../config.json';
 
 export let socket = null;
 
 export function connectToGameServer(dispatch, history) {
-    socket = io('http://localhost:3001', { reconnection: false });
+    socket = io(configJson.serverEndpoint, { reconnection: false });
 
     socket.on('connect', () => {
         console.log('Connected');
