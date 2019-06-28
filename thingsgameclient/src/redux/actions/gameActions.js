@@ -48,6 +48,10 @@ export function joinGame(name, gameId, history) {
             socket.on('nameAlreadyExists', data => {
                 dispatch(setError('joinGameError', 'Name ' + name + ' already exists in the game'));
             });
+
+            socket.on('gameInProgress', data => {
+                dispatch(setError('joinGameError', 'Game ' + gameId + ' already in progress. Wait until they\'re in the lobby'));
+            });
         }
     }
 }
