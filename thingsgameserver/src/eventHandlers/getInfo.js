@@ -4,7 +4,12 @@ const Player = require('../models/PlayerModel')();
 exports.getGameInfo = (gameId, callback) => {
     Game.findOne({ gameId: gameId }, (err, game) => {
         if (err) {
-            return console.log('Error: ' + err);
+            console.log('Error: ' + err);
+            return;
+        }
+        if (game == null) {
+            console.log('Game does not exist');
+            return;
         }
         let gameInfo = {
             gameId: gameId,
@@ -18,7 +23,12 @@ exports.getGameInfo = (gameId, callback) => {
 exports.getPlayerInfo = (gameId, callback) => {
     Game.findOne({ gameId: gameId }, (err, game) => {
         if (err) {
-            return [];
+            console.log('Error: ' + err);
+            return;
+        }
+        if (game == null) {
+            console.log('Game does not exist');
+            return;
         }
         const playerInfo = {};
         Player.find({ gameId: gameId }, (err, players) => {
