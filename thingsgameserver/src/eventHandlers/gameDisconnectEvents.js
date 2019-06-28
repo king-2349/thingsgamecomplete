@@ -150,7 +150,9 @@ function createGameDisconnectEvents(socket, io) {
     }
 
     socket.on('disconnect', disconnect);
-    socket.on(InboundEvents.LEAVE_GAME, disconnect);
+    socket.on(InboundEvents.LEAVE_GAME, () => {
+        socket.disconnect();
+    });
 }
 
 module.exports = createGameDisconnectEvents;

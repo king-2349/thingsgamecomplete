@@ -12,6 +12,12 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
 
+const Game = require('./models/GameModel')();
+const Player = require('./models/PlayerModel')();
+
+Game.deleteMany({},(err, res)=>{});
+Player.deleteMany({},(err, res)=>{});
+
 const io = require('socket.io')(app.listen(3001));
 
 io.on('connection', (socket) => {

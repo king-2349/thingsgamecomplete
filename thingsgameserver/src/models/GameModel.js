@@ -1,16 +1,19 @@
 const mongoose = require('mongoose');
 
-let GameSchema = new mongoose.Schema({
-    gameId: String,
-    gameState: String,
-    topic: String,
-    gameHead: String,
-    voter: String
-});
+const model = null;
 
 function createGameModel() {
-
-    return mongoose.model('GameModel', GameSchema, 'Games');
+    if (model == null) {
+        let GameSchema = new mongoose.Schema({
+            gameId: String,
+            gameState: String,
+            topic: String,
+            gameHead: String,
+            voter: String
+        });
+        model = mongoose.model('GameModel', GameSchema, 'Games');
+    }
+    return model;
 }
 
 module.exports = createGameModel;

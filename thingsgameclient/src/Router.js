@@ -1,4 +1,9 @@
+import { socket } from './socket/GameSocket';
+
 export function goToHome(history){
+    if(socket != null){
+        socket.emit('leaveGame');
+    }
     history.push('/');
 }
 

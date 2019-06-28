@@ -1,20 +1,23 @@
 const mongoose = require('mongoose');
 
-let PlayerSchema = new mongoose.Schema({
-    gameId: String,
-    name: String,
-    points: Number,
-    state: String,
-    answer: String,
-    next: String,
-    tail: Boolean,
-    roundPoints: Number,
-    socketId: String
-});
+const model = null;
 
-function createPlayerModel(gameId) {
-
-    return mongoose.model('PlayerModel', PlayerSchema, 'Players');
+function createPlayerModel() {
+    if (model == null) {
+        let PlayerSchema = new mongoose.Schema({
+            gameId: String,
+            name: String,
+            points: Number,
+            state: String,
+            answer: String,
+            next: String,
+            tail: Boolean,
+            roundPoints: Number,
+            socketId: String
+        });
+        model = mongoose.model('PlayerModel', PlayerSchema, 'Players');
+    }
+    return model;
 }
 
 module.exports = createPlayerModel;

@@ -36,9 +36,6 @@ function Vote({ history }) {
     function getDropDown(player) {
         switch (playerInfo[name].state) {
             case 'voting':
-                if (player.name === name) {
-                    return <React.Fragment></React.Fragment>
-                }
                 return createDropDown(player)
             default:
                 return (
@@ -69,6 +66,20 @@ function Vote({ history }) {
         );
     }
 
+    function shuffle(array) {
+        var currentIndex = array.length, temporaryValue, randomIndex;
+
+        while (0 !== currentIndex) {
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex -= 1;
+            temporaryValue = array[currentIndex];
+            array[currentIndex] = array[randomIndex];
+            array[randomIndex] = temporaryValue;
+        }
+
+        return array;
+    }
+
     function turnPlayerInfoIntoArray() {
         let players = [];
         for (let key in playerInfo) {
@@ -77,7 +88,7 @@ function Vote({ history }) {
                 ...playerInfo[key]
             })
         }
-        return players.sort((a,b) => Math.random()-.5);
+        return shuffle(players);
     }
 
     function getStatus() {

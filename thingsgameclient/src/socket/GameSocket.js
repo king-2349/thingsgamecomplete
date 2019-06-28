@@ -27,6 +27,7 @@ export function connectToGameServer(dispatch, history) {
     })
 
     socket.on('disconnect', () => {
+        socket = null;
         goToHome(history);
     })
 }
