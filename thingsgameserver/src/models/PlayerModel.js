@@ -6,7 +6,6 @@ let PlayerSchema = new mongoose.Schema({
     points: Number,
     state: String,
     answer: String,
-    pickedTopic: Boolean,
     next: String,
     tail: Boolean,
     roundPoints: Number,

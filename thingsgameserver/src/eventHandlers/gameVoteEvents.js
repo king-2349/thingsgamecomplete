@@ -34,6 +34,10 @@ function createGameVoteEvents(socket, io) {
                         return;
                     }
                     Player.find({ gameId: gameId }, (err, players) => {
+                        if (err) {
+                            socket.emit(OutboundEvents.BACKEND_ERROR, err);
+                            return;
+                        }
                         const nextPlayerToVote = getNextPlayer(player, players);
                         Game.updateOne({ gameId: gameId }, { voter: nextPlayerToVote }, (err, res) => {
                             if (err) {

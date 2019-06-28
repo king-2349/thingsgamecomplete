@@ -3,7 +3,6 @@ import { SET_GAME_INFO } from '../actions/actionTypes';
 const defaultGameInfo = {
     gameId: '',
     gameState: 'lobby',
-    turn: -1,
     topic: 'placeholder'
 }
 

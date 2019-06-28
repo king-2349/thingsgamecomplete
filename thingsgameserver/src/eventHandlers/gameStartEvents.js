@@ -18,12 +18,12 @@ function createGameStateEvents(socket, io) {
                     socket.emit(OutboundEvents.BACKEND_ERROR, err);
                     return;
                 }
-                Player.updateMany({ gameId: gameId }, { state: PlayerStates.WAITING, answer: '', pickedTopic: false, roundPoints: 0 }, (err, res) => {
+                Player.updateMany({ gameId: gameId }, { state: PlayerStates.WAITING, answer: '', roundPoints: 0 }, (err, res) => {
                     if (err) {
                         socket.emit(OutboundEvents.BACKEND_ERROR, err);
                         return;
                     }
-                    Player.updateOne({ gameId: gameId, name: player.name }, { state: PlayerStates.TOPIC, pickedTopic: true }, (err, res) => {
+                    Player.updateOne({ gameId: gameId, name: player.name }, { state: PlayerStates.TOPIC }, (err, res) => {
                         if (err) {
                             socket.emit(OutboundEvents.BACKEND_ERROR, err);
                             return;

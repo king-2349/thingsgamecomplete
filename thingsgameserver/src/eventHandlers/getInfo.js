@@ -9,7 +9,6 @@ exports.getGameInfo = (gameId, callback) => {
         let gameInfo = {
             gameId: gameId,
             gameState: game.gameState,
-            turn: game.turn,
             topic: game.topic
         };
         callback(gameInfo);
