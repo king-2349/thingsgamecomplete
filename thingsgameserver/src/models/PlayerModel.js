@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const model = null;
+let model = null;
 
 function createPlayerModel() {
     if (model == null) {

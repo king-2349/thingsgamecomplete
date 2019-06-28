@@ -1,6 +1,7 @@
 import { socket, connectToGameServer } from '../../socket/GameSocket';
 import { setGameInfo } from './gameInfoActions';
 import { setPlayerInfo, setName } from './playerInfoActions';
+import { setError } from './errorActions';
 import { goToGame } from '../../Router';
 
 export function newGame(name, history) {
@@ -17,6 +18,7 @@ export function newGame(name, history) {
                 dispatch(setGameInfo(gameInfo));
                 dispatch(setPlayerInfo(playerInfo));
                 goToGame(history);
+                dispatch(setError('lobbyError', ''));
             });
         }
     }
@@ -36,14 +38,15 @@ export function joinGame(name, gameId, history) {
                 dispatch(setGameInfo(gameInfo));
                 dispatch(setPlayerInfo(playerInfo));
                 goToGame(history);
+                dispatch(setError('lobbyError', ''));
             });
 
             socket.on('noGameFound', data => {
-                console.log("No such game " + data);
+                dispatch(setError('joinGameError', 'Game ' + gameId + ' not found'));
             });
 
             socket.on('nameAlreadyExists', data => {
-                console.log("Name " + data + " already exists in the game");
+                dispatch(setError('joinGameError', 'Name ' + name + ' already exists in the game'));
             });
         }
     }
@@ -52,6 +55,10 @@ export function joinGame(name, gameId, history) {
 export function startRound(gameId) {
     return (dispatch) => {
         socket.emit('startRound', gameId);
+
+        socket.on('notEnoughPlayers', data => {
+            dispatch(setError('lobbyError', 'Need at least 3 people to start game. You only have '+data));
+        })
     }
 }
 

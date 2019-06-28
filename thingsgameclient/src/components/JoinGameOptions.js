@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { Button, Container, Row, Col, Jumbotron, Form } from 'react-bootstrap';
 import { goToHome } from '../Router';
-import { joinGame } from '../redux/actions/gameSetupActions';
-import { useDispatch } from 'react-redux';
+import { joinGame } from '../redux/actions/gameActions';
+import { useDispatch, useSelector } from 'react-redux';
+import { setError } from '../redux/actions/errorActions';
 
 
 function JoinGameOptions({ history }) {
     const dispatch = useDispatch();
+    const errors = useSelector(state => state.errors);
     const [nameField, setNameField] = useState('');
     const [gameIdField, setGameIdField] = useState('');
 
@@ -19,14 +21,24 @@ function JoinGameOptions({ history }) {
 
     function nameOnChange(e) {
         setNameField(e.target.value);
+        if (errors.joinGameError !== '') {
+            dispatch(setError('joinGameError',''));
+        }
     }
 
     function gameIdOnChange(e) {
         setGameIdField(e.target.value);
+        if (errors.joinGameError !== '') {
+            dispatch(setError('joinGameError',''));
+        }
     }
 
-    //Can have flag in store for different errors like game not found or name already taken
-    //if statements that only render stuff when flag is true
+    function printError() {
+        if (errors.joinGameError !== '') {
+            return <React.Fragment><br></br><h5>{errors.joinGameError}!!!</h5></React.Fragment>
+        }
+    }
+
     return (
         <React.Fragment>
             <Container>
@@ -55,6 +67,7 @@ function JoinGameOptions({ history }) {
                                 <Button variant='secondary' block onClick={() => goToHome(history)}>
                                     Back
                                 </Button>
+                                {printError()}
                             </center>
                         </Jumbotron>
                     </Col>

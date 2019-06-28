@@ -8,41 +8,52 @@ function createGameStateEvents(socket, io) {
     const info = require('./getInfo');
 
     socket.on(InboundEvents.START_ROUND, (gameId) => {
-        Game.findOneAndUpdate({ gameId: gameId }, { gameState: GameStates.TOPIC, topic: '' }, (err, game) => {
+        Player.find({ gameId: gameId }, (err, players) => {
             if (err) {
                 socket.emit(OutboundEvents.BACKEND_ERROR, err);
                 return;
             }
-            Player.findOne({ gameId: gameId, name: game.gameHead }, (err, player) => {
-                if (err) {
-                    socket.emit(OutboundEvents.BACKEND_ERROR, err);
-                    return;
-                }
-                Player.updateMany({ gameId: gameId }, { state: PlayerStates.WAITING, answer: '', roundPoints: 0 }, (err, res) => {
+            if (players.length > 2) {
+                Game.findOneAndUpdate({ gameId: gameId }, { gameState: GameStates.TOPIC, topic: '' }, (err, game) => {
                     if (err) {
                         socket.emit(OutboundEvents.BACKEND_ERROR, err);
                         return;
                     }
-                    Player.updateOne({ gameId: gameId, name: player.name }, { state: PlayerStates.TOPIC }, (err, res) => {
+                    Player.findOne({ gameId: gameId, name: game.gameHead }, (err, player) => {
                         if (err) {
                             socket.emit(OutboundEvents.BACKEND_ERROR, err);
                             return;
                         }
-                        Game.updateOne({ gameId: gameId }, { gameHead: player.next, voter: player.next }, (err, res) => {
+                        Player.updateMany({ gameId: gameId }, { state: PlayerStates.WAITING, answer: '', roundPoints: 0 }, (err, res) => {
                             if (err) {
                                 socket.emit(OutboundEvents.BACKEND_ERROR, err);
                                 return;
                             }
-                            info.getPlayerInfo(gameId, (playerInfo) => {
-                                info.getGameInfo(gameId, (gameInfo) => {
-                                    io.to(gameId).emit(OutboundEvents.ALL_UPDATE, gameInfo, playerInfo);
-                                });
-                            });
+                            Player.updateOne({ gameId: gameId, name: player.name }, { state: PlayerStates.TOPIC }, (err, res) => {
+                                if (err) {
+                                    socket.emit(OutboundEvents.BACKEND_ERROR, err);
+                                    return;
+                                }
+                                Game.updateOne({ gameId: gameId }, { gameHead: player.next, voter: player.next }, (err, res) => {
+                                    if (err) {
+                                        socket.emit(OutboundEvents.BACKEND_ERROR, err);
+                                        return;
+                                    }
+                                    info.getPlayerInfo(gameId, (playerInfo) => {
+                                        info.getGameInfo(gameId, (gameInfo) => {
+                                            io.to(gameId).emit(OutboundEvents.ALL_UPDATE, gameInfo, playerInfo);
+                                        });
+                                    });
+                                })
+                            })
                         })
                     })
-                })
-            })
-        });
+                });
+            }
+            else{
+                socket.emit(OutboundEvents.NOT_ENOUGH_PLAYERS,players.length);
+            }
+        })
     });
 }
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { ListGroup, Button, Container, Row, Col } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
-import { backToLobby } from '../../redux/actions/gameSetupActions';
+import { backToLobby } from '../../redux/actions/gameActions';
 
 function Results({ history }) {
     const gameInfo = useSelector(state => state.gameInfo);

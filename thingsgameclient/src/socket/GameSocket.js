@@ -1,6 +1,7 @@
 import io from 'socket.io-client';
 import { setPlayerInfo } from '../redux/actions/playerInfoActions';
 import { setGameInfo } from '../redux/actions/gameInfoActions';
+import { setError } from '../redux/actions/errorActions';
 import { goToHome } from '../Router';
 
 export let socket = null;
@@ -18,6 +19,7 @@ export function connectToGameServer(dispatch, history) {
     })
 
     socket.on('allUpdate', (gameInfo, playerInfo) => {
+        dispatch(setError('lobbyError', ''));
         dispatch(setGameInfo(gameInfo));
         dispatch(setPlayerInfo(playerInfo));
     })

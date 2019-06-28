@@ -21,11 +21,16 @@ Player.deleteMany({},(err, res)=>{});
 const io = require('socket.io')(app.listen(3001));
 
 io.on('connection', (socket) => {
-    require('./eventHandlers/gameSetupEvents')(socket, io);
-    require('./eventHandlers/gameStartEvents')(socket, io);
-    require('./eventHandlers/gameSubmitTopicEvents')(socket, io);
-    require('./eventHandlers/gameAnswerEvents')(socket, io);
-    require('./eventHandlers/gameVoteEvents')(socket, io);
-    require('./eventHandlers/gameRoundOverEvents')(socket, io);
-    require('./eventHandlers/gameDisconnectEvents')(socket, io);
+    try{
+        require('./eventHandlers/gameSetupEvents')(socket, io);
+        require('./eventHandlers/gameStartEvents')(socket, io);
+        require('./eventHandlers/gameSubmitTopicEvents')(socket, io);
+        require('./eventHandlers/gameAnswerEvents')(socket, io);
+        require('./eventHandlers/gameVoteEvents')(socket, io);
+        require('./eventHandlers/gameRoundOverEvents')(socket, io);
+        require('./eventHandlers/gameDisconnectEvents')(socket, io);
+    }
+    catch(e){
+        console.log('Just saved server from crashing with error: '+e);
+    }
 });

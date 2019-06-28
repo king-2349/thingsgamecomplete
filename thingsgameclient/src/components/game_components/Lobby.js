@@ -1,10 +1,11 @@
 import React from 'react';
 import { ListGroup, Button, Container, Row, Col } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
-import { startRound } from '../../redux/actions/gameSetupActions';
+import { startRound } from '../../redux/actions/gameActions';
 import { goToHome } from '../../Router';
 
 function Lobby({ history }) {
+    const errors = useSelector(state => state.errors);
     const gameInfo = useSelector(state => state.gameInfo);
     const playerInfo = useSelector(state => state.playerInfo);
     const dispatch = useDispatch();
@@ -14,15 +15,21 @@ function Lobby({ history }) {
         dispatch(startRound(gameInfo.gameId));
     }
 
-    function turnPlayerInfoIntoArray(){
+    function turnPlayerInfoIntoArray() {
         let players = [];
-        for(let key in playerInfo){
+        for (let key in playerInfo) {
             players.push({
-                name:key,
+                name: key,
                 ...playerInfo[key]
             })
         }
         return players;
+    }
+
+    function printError() {
+        if (errors.lobbyError !== '') {
+            return <React.Fragment><br></br><h5>{errors.lobbyError}!!!</h5></React.Fragment>
+        }
     }
 
     return (
@@ -35,8 +42,8 @@ function Lobby({ history }) {
                         <ListGroup.Item key={player.name} style={{ color: 'white' }}>
                             <Container>
                                 <Row>
-                                    <Col xs={9} style={{textAlign:'left'}}>{player.name}</Col>
-                                    <Col xs={3} style={{textAlign:'right'}}>{player.points}</Col>
+                                    <Col xs={9} style={{ textAlign: 'left' }}>{player.name}</Col>
+                                    <Col xs={3} style={{ textAlign: 'right' }}>{player.points}</Col>
                                 </Row>
                             </Container>
                         </ListGroup.Item>)
@@ -49,6 +56,7 @@ function Lobby({ history }) {
             <Button variant='secondary' block onClick={() => goToHome(history)}>
                 Leave Game
             </Button>
+            {printError()}
         </React.Fragment>
     );
 }

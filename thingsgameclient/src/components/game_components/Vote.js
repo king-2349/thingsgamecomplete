@@ -1,7 +1,7 @@
 import React from 'react';
 import { DropdownButton, Dropdown } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
-import { submitVote } from '../../redux/actions/gameSetupActions';
+import { submitVote } from '../../redux/actions/gameActions';
 
 function Vote({ history }) {
     const gameInfo = useSelector(state => state.gameInfo);
@@ -21,6 +21,9 @@ function Vote({ history }) {
         let players = [];
         for (let key in playerInfo) {
             players.push(key);
+        }
+        if (player.state === 'out') {
+            return <React.Fragment></React.Fragment>
         }
         return (
             <DropdownButton title='Vote for player' onSelect={(key, e) => handleVote(key, e, player.answer)}>
@@ -47,7 +50,7 @@ function Vote({ history }) {
     function getAnswerName(player) {
         switch (player.state) {
             case 'out':
-                return player.name + ":"
+                return player.name + ':'
             default:
                 return '????:'
         }

@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { Button, Container, Row, Col, Jumbotron, Form } from 'react-bootstrap';
 import { goToHome } from '../Router';
-import { newGame } from '../redux/actions/gameSetupActions';
-import { useDispatch } from 'react-redux';
+import { newGame } from '../redux/actions/gameActions';
+import { useDispatch, useSelector } from 'react-redux';
 
 function NewGameOptions({ history }) {
     const dispatch = useDispatch();
+    const errors = useSelector(state => state.errors);
     const [nameField, setNameField] = useState('');
 
     function handleNewGame(e) {
@@ -16,6 +17,12 @@ function NewGameOptions({ history }) {
 
     function nameOnChange(e) {
         setNameField(e.target.value);
+    }
+
+    function printError() {
+        if (errors.newGameError !== '') {
+            return <React.Fragment><br></br><h5>{errors.newGameError}!!!</h5></React.Fragment>
+        }
     }
 
     return (
@@ -41,6 +48,7 @@ function NewGameOptions({ history }) {
                                 <Button variant='secondary' block onClick={() => goToHome(history)}>
                                     Back
                                 </Button>
+                                {printError()}
                             </center>
                         </Jumbotron>
                     </Col>

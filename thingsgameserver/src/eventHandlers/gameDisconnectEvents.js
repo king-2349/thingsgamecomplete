@@ -38,7 +38,7 @@ function createGameDisconnectEvents(socket, io) {
     function disconnect() {
         Player.findOne({ socketId: socket.id }, (err, player) => {
             if (err || player == null) { return; }
-            console.log(player.name + " is disconnecting");
+            console.log(player.name + ' is disconnecting');
             Game.findOne({ gameId: player.gameId }, (err, game) => {
                 if (err || game == null) { return; }
                 //Remove from table and fix linked list

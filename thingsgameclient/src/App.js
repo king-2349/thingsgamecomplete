@@ -9,9 +9,10 @@ import JoinGameOptions from './components/JoinGameOptions';
 import PageNotFound from './components/PageNotFound';
 
 function App() {
+
   return (
     <React.Fragment>
-      <Appbar/>
+      <Appbar />
       <Switch>
         <Route exact path='/' component={Home} />
         <Route exact path='/newGame' component={NewGameOptions} />
