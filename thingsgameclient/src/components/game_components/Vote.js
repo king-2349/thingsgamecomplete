@@ -1,7 +1,7 @@
 import React from 'react';
-import { DropdownButton, Dropdown } from 'react-bootstrap';
+import { DropdownButton, Dropdown, Button } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
-import { submitVote } from '../../redux/actions/gameActions';
+import { submitVote, backToLobby } from '../../redux/actions/gameActions';
 
 function Vote({ history }) {
     const gameInfo = useSelector(state => state.gameInfo);
@@ -29,7 +29,7 @@ function Vote({ history }) {
             <DropdownButton title='Vote for player' onSelect={(key, e) => handleVote(key, e, player.answer)}>
                 {
                     players.map(playerName => {
-                        if(playerName === name){
+                        if (playerName === name) {
                             return <React.Fragment key={playerName}></React.Fragment>
                         }
                         return <Dropdown.Item eventKey={playerName} key={playerName}>{playerName}</Dropdown.Item>
@@ -53,27 +53,32 @@ function Vote({ history }) {
     function getAnswerName(player) {
         switch (player.state) {
             case 'out':
-                return player.name + ':'
+                if (player.name === name) {
+                    return <h5 style={{ marginBottom: '15px', textDecoration: 'line-through', color: 'red' }}>{'Your answer:'}</h5>
+                }
+                return <h5 style={{ marginBottom: '15px', textDecoration: 'line-through', color: 'red' }}>{player.name + ':'}</h5>
             default:
-                return '????:'
+                if (player.name === name) {
+                    return <h5 style={{ marginBottom: '15px' }}>{'Your answer:'}</h5>
+                }
+                return <h5 style={{ marginBottom: '15px' }}>{'????:'}</h5>
         }
     }
 
     function generatePlayerAnswer(player) {
-        if(player.name === name){
+        if (player.name === name) {
             return <React.Fragment key={player.name}></React.Fragment>
         }
         return (
             <React.Fragment key={player.name}>
-                <h5>{getAnswerName(player)}</h5>
-                <h5 style={{ marginBottom: '15px', fontStyle: 'italic' }}>{player.answer}</h5>
-                {
-                    getDropDown(player)
-                }
+                {getAnswerName(player)}
+                {drawPlayerAnswerText(player)}
+                {getDropDown(player)}
                 <div style={{ marginBottom: '15px', borderBottom: '2px solid white', paddingBottom: '15px' }}></div>
             </React.Fragment>
         );
     }
+    //Fix voting screen
 
     function shuffle(array) {
         var currentIndex = array.length, temporaryValue, randomIndex;
@@ -103,24 +108,40 @@ function Vote({ history }) {
     function getStatus() {
         switch (playerInfo[name].state) {
             case 'out':
-                return 'OUT'
+                return <h5 style={{ color: 'red' }}>Status: OUT</h5>
             case 'voting':
-                return 'VOTE'
+                return <h5 style={{ color: 'green' }}>Status: VOTE</h5>
             default:
-                return 'WAIT'
+                return <h5 style={{ color: 'yellow' }}>Status: WAIT</h5>
+        }
+    }
+
+    function drawPlayerAnswerText(player) {
+        switch (player.state) {
+            case 'out':
+                return <h5 style={{ marginBottom: '15px', fontStyle: 'italic', textDecoration: 'line-through', color: 'red' }}>{player.answer}</h5>
+            default:
+                return <h5 style={{ marginBottom: '15px', fontStyle: 'italic' }}>{player.answer}</h5>
         }
     }
 
     return (
         <React.Fragment>
-            <h5>Status: {getStatus()}</h5>
+            {getStatus()}
             <h5>Topic:</h5>
-            <h5 style={{ marginBottom: '15px', fontStyle: 'italic', borderBottom: '2px solid white', paddingBottom: '15px' }}>{gameInfo.topic}</h5>
+            <h5 style={{ marginBottom: '15px', fontStyle: 'italic', paddingBottom: '15px' }}>{gameInfo.topic}</h5>
+            {getAnswerName({ name: name, state: playerInfo[name].state })}
+            {drawPlayerAnswerText({ name: name, state: playerInfo[name].state, answer: playerInfo[name].answer })}
+            <div style={{ marginBottom: '15px', borderBottom: '2px solid white', paddingBottom: '15px' }}></div>
             {
                 turnPlayerInfoIntoArray().map(player =>
                     generatePlayerAnswer(player)
                 )
             }
+            <br></br>
+            <Button variant='primary' block onClick={() => dispatch(backToLobby(gameInfo.gameId))}>
+                Back to Lobby
+            </Button>
         </React.Fragment>
     );
 }

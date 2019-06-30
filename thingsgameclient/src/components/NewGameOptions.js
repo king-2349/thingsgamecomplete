@@ -3,6 +3,7 @@ import { Button, Container, Row, Col, Jumbotron, Form } from 'react-bootstrap';
 import { goToHome } from '../Router';
 import { newGame } from '../redux/actions/gameActions';
 import { useDispatch, useSelector } from 'react-redux';
+import { setError } from '../redux/actions/errorActions';
 
 function NewGameOptions({ history }) {
     const dispatch = useDispatch();
@@ -17,6 +18,9 @@ function NewGameOptions({ history }) {
 
     function nameOnChange(e) {
         setNameField(e.target.value);
+        if (errors.newGameError !== '') {
+            dispatch(setError('newGameError',''));
+        }
     }
 
     function printError() {

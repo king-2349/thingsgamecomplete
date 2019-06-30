@@ -8,7 +8,6 @@ import configJson from  '../config.json';
 export let socket = null;
 
 export function connectToGameServer(dispatch, history) {
-    console.log(configJson.serverEndpoint);
     socket = io(configJson.serverEndpoint, { reconnection: false });
 
     socket.on('connect', () => {

@@ -36,6 +36,9 @@ function Results({ history }) {
                                     <Col xs={9} style={{textAlign:'left'}}>{player.name}</Col>
                                     <Col xs={3} style={{textAlign:'right'}}>{'+'+player.roundPoints}</Col>
                                 </Row>
+                                <Row>
+                                    <Col>{player.answer}</Col>
+                                </Row>
                             </Container>
                         </ListGroup.Item>)
                 }

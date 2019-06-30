@@ -20,6 +20,10 @@ export function newGame(name, history) {
                 goToGame(history);
                 dispatch(setError('lobbyError', ''));
             });
+
+            socket.on('gameIdError', data => {
+                dispatch(setError('newGameError', 'Error creating game (honestly this error only has a 1 in 4096000000 chance of happening, so this is actually kind of amazing). Please try again'));
+            });
         }
     }
 }

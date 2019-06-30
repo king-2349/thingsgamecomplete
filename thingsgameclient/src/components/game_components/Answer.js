@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
-import { submitAnswer } from '../../redux/actions/gameActions';
+import { submitAnswer, backToLobby } from '../../redux/actions/gameActions';
 
 function Answer({ history }) {
     const dispatch = useDispatch();
@@ -51,6 +51,10 @@ function Answer({ history }) {
             <h5>Topic:</h5>
             <h5 style={{ marginBottom: '15px', fontStyle: 'italic' }}>{gameInfo.topic}</h5>
             {getView()}
+            <br></br>
+            <Button variant='primary' block onClick={() => dispatch(backToLobby(gameInfo.gameId))}>
+                Back to Lobby
+            </Button>
         </React.Fragment>
     );
 }
