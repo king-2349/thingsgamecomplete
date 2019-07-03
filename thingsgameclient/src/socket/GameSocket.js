@@ -3,7 +3,7 @@ import { setPlayerInfo } from '../redux/actions/playerInfoActions';
 import { setGameInfo } from '../redux/actions/gameInfoActions';
 import { setError } from '../redux/actions/errorActions';
 import { goToHome } from '../Router';
-import configJson from  '../config.json';
+import configJson from '../config.json';
 
 export let socket = null;
 
@@ -31,6 +31,12 @@ export function connectToGameServer(dispatch, history) {
 
     socket.on('disconnect', () => {
         socket = null;
+        dispatch(setGameInfo({
+            gameId: '',
+            gameState: 'lobby',
+            topic: 'placeholder'
+        }));
+        dispatch(setPlayerInfo([]));
         goToHome(history);
     })
 }

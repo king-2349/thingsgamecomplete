@@ -3,6 +3,7 @@ import { ListGroup, Button, Container, Row, Col } from 'react-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { startRound } from '../../redux/actions/gameActions';
 import { goToHome } from '../../Router';
+import { setError } from '../../redux/actions/errorActions';
 
 function Lobby({ history }) {
     const errors = useSelector(state => state.errors);
@@ -53,7 +54,7 @@ function Lobby({ history }) {
             <Button variant='primary' block onClick={(e) => handleStartRound(e)}>
                 Start Round
             </Button>
-            <Button variant='secondary' block onClick={() => goToHome(history)}>
+            <Button variant='secondary' block onClick={() => { dispatch(setError('lobbyError', '')); goToHome(history) }}>
                 Leave Game
             </Button>
             {printError()}

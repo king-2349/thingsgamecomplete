@@ -12,19 +12,20 @@ function NewGameOptions({ history }) {
 
     function handleNewGame(e) {
         e.preventDefault();
-        if(nameField !== ''){
+        if (nameField !== '') {
+            dispatch(setError('newGameError', ''));
             dispatch(newGame(nameField, history));
             setNameField('');
         }
-        else{
-            dispatch(setError('newGameError','Name cannot be blank'));
+        else {
+            dispatch(setError('newGameError', 'Name cannot be blank'));
         }
     }
 
     function nameOnChange(e) {
         setNameField(e.target.value);
         if (errors.newGameError !== '') {
-            dispatch(setError('newGameError',''));
+            dispatch(setError('newGameError', ''));
         }
     }
 
@@ -54,7 +55,7 @@ function NewGameOptions({ history }) {
                                     </Button>
                                 </Form>
                                 <br></br>
-                                <Button variant='secondary' block onClick={() => goToHome(history)}>
+                                <Button variant='secondary' block onClick={() => { dispatch(setError('newGameError', '')); goToHome(history); }}>
                                     Back
                                 </Button>
                                 {printError()}

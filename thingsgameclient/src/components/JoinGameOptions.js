@@ -15,6 +15,7 @@ function JoinGameOptions({ history }) {
     function handleJoinGame(e) {
         e.preventDefault();
         if (nameField !== '' && gameIdField !== '') {
+            dispatch(setError('joinGameError', ''));
             dispatch(joinGame(nameField, gameIdField, history));
             setNameField('');
             setGameIdField('');
@@ -72,7 +73,7 @@ function JoinGameOptions({ history }) {
                                     </Button>
                                 </Form>
                                 <br></br>
-                                <Button variant='secondary' block onClick={() => goToHome(history)}>
+                                <Button variant='secondary' block onClick={() => { dispatch(setError('joinGameError', '')); goToHome(history) }}>
                                     Back
                                 </Button>
                                 {printError()}
