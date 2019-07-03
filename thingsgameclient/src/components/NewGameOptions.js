@@ -12,8 +12,13 @@ function NewGameOptions({ history }) {
 
     function handleNewGame(e) {
         e.preventDefault();
-        dispatch(newGame(nameField, history));
-        setNameField('');
+        if(nameField !== ''){
+            dispatch(newGame(nameField, history));
+            setNameField('');
+        }
+        else{
+            dispatch(setError('newGameError','Name cannot be blank'));
+        }
     }
 
     function nameOnChange(e) {

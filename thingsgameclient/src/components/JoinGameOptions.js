@@ -14,22 +14,30 @@ function JoinGameOptions({ history }) {
 
     function handleJoinGame(e) {
         e.preventDefault();
-        dispatch(joinGame(nameField, gameIdField, history));
-        setNameField('');
-        setGameIdField('');
+        if (nameField !== '' && gameIdField !== '') {
+            dispatch(joinGame(nameField, gameIdField, history));
+            setNameField('');
+            setGameIdField('');
+        }
+        else if (nameField === '') {
+            dispatch(setError('joinGameError', 'Name cannot be blank'));
+        }
+        else {
+            dispatch(setError('joinGameError', 'Game code cannot be blank'));
+        }
     }
 
     function nameOnChange(e) {
         setNameField(e.target.value);
         if (errors.joinGameError !== '') {
-            dispatch(setError('joinGameError',''));
+            dispatch(setError('joinGameError', ''));
         }
     }
 
     function gameIdOnChange(e) {
         setGameIdField(e.target.value);
         if (errors.joinGameError !== '') {
-            dispatch(setError('joinGameError',''));
+            dispatch(setError('joinGameError', ''));
         }
     }
 
